@@ -1,22 +1,23 @@
-Welcome to Lumache's documentation!
+Welcome to HSL's documentation!
 ===================================
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+**HSL** (Hamilton Standard Language) is the backend that Venus compiles to, and is used
+to control Hamilton liquid handling robots such as the Microlab STAR.
+Whilst HSL can be used to write methods directly, this functionality is rarely used,
+instead it is primarily used to write supporting libraries which can then be used directly
+within Venus.
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+There are very few available resources for HSL, but hopefully this documentation can
+serve as a good starting point for people wanting to learn it.
 
 .. note::
 
-   This project is under active development.
+   This project is under active development. This resource is also not a Hamilton-provided resource. If any issues are found, or you wish to contribute, please contact mailto:tarunchapman@hotmail.com, or reach out to me on discord (theonetruenerd)
 
 Contents
 --------
 
 .. toctree::
 
-   usage
-   api
+   fundamentals
+   writing_a_library
