@@ -327,9 +327,9 @@ Full Example Code
     //
     // Library Name:                MyFlankingNamespace::MyLibraryName
     // Description:                 A description of my library
-    // Author:                          tarunchapman
+    // Author:                      tarunchapman
     // Date Created:                2025-09-26
-    // Major ID:                    My library major id in hexadecimal
+    // Major ID:                    0xC8
     //
     // Library Version:             v1.0
     //
@@ -343,6 +343,9 @@ Full Example Code
 
     #ifndef __HSLMTHLIB_HSL__
         #include "HslMthLib.hsl"
+    #endif
+    #ifndef __HSLUTILLIB_HSL__
+        #include "HSLUtilLib.hsl"
     #endif
 
     #ifndef HSL_RUNTIME
@@ -399,12 +402,12 @@ Full Example Code
                 // Scope: Static
                 // Description: Handles the generation of error codes and descriptions in the trace
                 // Parameters:
-                //      [i] majorID     -       The major error ID
-                //      [i] minorID     -       The minor error ID
-                //      [i] specificID  -       The specific error ID
+                //      [i] majorID             -       The major error ID
+                //      [i] minorID             -       The minor error ID
+                //      [i] specificID          -       The specific error ID
                 //      [i] errorDescription    -       The error description
                 //      [i] functionName        -       The name of the function that raised the error
-                //      [i] lineNumber  -       The line number of the function that raised the error
+                //      [i] lineNumber          -       The line number of the function that raised the error
                 // Returns: Void
                 // --------------------------
                 static function RaiseRuntimeError(
@@ -480,7 +483,7 @@ Full Example Code
             // Description: Outputs the square of the input number
             // Parameters:
             //      [i] i_var_intInputNumber    -   The number to be squared
-            //  [o] o_var_intSquaredNumber  -   The squared number
+            //      [o] o_var_intSquaredNumber  -   The squared number
             // Returns: Void
             // --------------------------
             function SquareNumber(variable i_var_intInputNumber, variable& o_var_intSquaredNumber) void
