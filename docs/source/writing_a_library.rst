@@ -317,3 +317,192 @@ Assuming these are all the functions we need, we can now close off our namespace
 
 And there you go! Your first library! This just goes through the basic structure. Continue to browse the documentation for
 more detail on specific functions, or look at how to create help files and icons for your functions.
+
+Full Example Code
+------------------
+
+.. code-block::
+
+    //----------------------------------------------------------------------------------------
+    //
+    // Library Name:                MyFlankingNamespace::MyLibraryName
+    // Description:                 A description of my library
+    // Author:                      tarunchapman
+    // Date Created:                2025-09-26
+    // Major ID:                    0xC8
+    //
+    // Library Version:             v1.0
+    //
+    // Changelog:
+    //                      v1.0    -       2025-09-26      -       Library Created
+    //
+    //----------------------------------------------------------------------------------------
+
+    #ifndef __MYLIBRARY_HSL__
+    #define __MYLIBRARY_HSL__ 1
+
+    #ifndef __HSLMTHLIB_HSL__
+        #include "HslMthLib.hsl"
+    #endif
+    #ifndef __HSLUTILLIB_HSL__
+        #include "HSLUtilLib.hsl"
+    #endif
+
+    #ifndef HSL_RUNTIME
+
+    namespace MyFlankingNamespace {
+        namespace MyLibraryNamespace {
+
+            namespace Error {
+
+                static function RaiseRuntimeError(
+                            variable majorID,
+                            variable minorID,
+                            variable specificID,
+                            string errorDescription,
+                            string functionName,
+                            variable lineNumber) void
+                        {
+                            return;
+                        }
+                }
+            }
+
+            function SquareNumber(variable i_var_intNumberToSquare) variable {return(0);}
+            function SquareNumberAlternative(variable i_var_intNumberToSquare, variable& o_var_intSquaredNumber) void {return;}
+
+            private function MySupportingFunction() void {return;}
+
+        } // end of library namespace
+    } // end of flanking namespace
+    #endif // End of "#ifndef HSL_RUNTIME
+
+    #ifdef HSL_RUNTIME
+
+    namespace MyFlankingNamespace {
+        namespace MyLibraryNamespace {
+
+            namespace Error {
+
+                static const variable MajorID       (0xC8); // This should be the major ID of the library
+
+                namespace MinorIDs {
+                    static const variable UnspecifiedFunctionId         (0x00)  // Always good to keep 0x00 free for unspecified errors
+                    static const variable SquareNumberId                (0x01)  // Repeat this for each function (private or public) in your library
+                    static const variable SquareNumberAlternativeId     (0x02)
+                }
+
+                namespace SpecificIDs {
+                    static const variable UnspecifiedErrorId    (0x00)  // Again, keep 0x00 free for unspecified errors
+                    static const variable InputNotInt            (0x01)  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
+                }
+
+                // --------------------------
+                // Function: RaiseRuntimeError
+                // Scope: Static
+                // Description: Handles the generation of error codes and descriptions in the trace
+                // Parameters:
+                //      [i] majorID             -       The major error ID
+                //      [i] minorID             -       The minor error ID
+                //      [i] specificID          -       The specific error ID
+                //      [i] errorDescription    -       The error description
+                //      [i] functionName        -       The name of the function that raised the error
+                //      [i] lineNumber          -       The line number of the function that raised the error
+                // Returns: Void
+                // --------------------------
+                static function RaiseRuntimeError(
+                    variable majorID,
+                    variable minorID,
+                    variable specificID,
+                    string errorDescription,
+                    string functionName,
+                    variable lineNumber) void
+                {
+                    // Defining function variables
+                    variable HxResult;
+                    variable description;
+
+                    // Generating error code
+                    HxResult = MthShiftLeft(minorID & 0x1F, 24) | MthShiftLeft(majorID & 0xFF, 16) | (specificID & 0xFFFF);
+                    // Defining error description;
+                    description = "MyLibrary.hsl ("+lineNumber+") : " + functionName + "() : " + errorDescription;
+                    err.SetDescription(description);
+                    // Raising error
+                    err.Raise(HxResult, err.GetDescription());
+                    // Returning void
+                    return;
+                }
+            } // End of error namespace
+
+            // Private functions
+
+            // --------------------------
+            // Function: MySupportingFunction
+            // Scope: Private
+            // Description: A supporting function not visible in the method editor
+            // Parameters: None
+            // Returns: Void
+            // --------------------------
+            private function MySupportingFunction() void
+            {
+                // We would put the code for our supporting function here
+                return;
+            }
+
+            // Public functions
+
+            // --------------------------
+            // Function: SquareNumber
+            // Scope: Public
+            // Description: Returns the square of the input number
+            // Parameters:
+            //      [i] i_var_intInputNumber    -   The number to be squared
+            // Returns: Variable. The squared number
+            // --------------------------
+            function SquareNumber(variable i_var_intInputNumber) variable
+            {
+                variable outputNumber; // Before using any variable we need to define it.
+                variable typeCheck; // Any variables declared in functions are local and not accessible outside the function
+
+                // Lets say we want our function to only handle integers
+                typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+                if (typeCheck == hslFalse)
+                {
+                    // Here we call our RaiseRuntimeError function
+                    Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber(););
+                }
+
+                outputNumber = i_var_intInputNumber * i_var_intInputNumber;
+
+                return (outputNumber);
+            }
+
+            // --------------------------
+            // Function: SquareNumberAlternative
+            // Scope: Public
+            // Description: Outputs the square of the input number
+            // Parameters:
+            //      [i] i_var_intInputNumber    -   The number to be squared
+            //      [o] o_var_intSquaredNumber  -   The squared number
+            // Returns: Void
+            // --------------------------
+            function SquareNumber(variable i_var_intInputNumber, variable& o_var_intSquaredNumber) void
+            {
+                variable typeCheck;
+
+                // Lets say we want our function to only handle integers
+                typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+                if (typeCheck == hslFalse)
+                {
+                    // We can reuse the specific error id as it is the same cause, though often you will not be able to do this.
+                    // The minor error id corresponds to the specific function.
+                    Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber(););
+                }
+
+                o_var_intSquaredNumber = i_var_intInputNumber * i_var_intInputNumber;
+                return;
+            }
+        } // End of MyLibraryNamespace
+    } // End of MyFlankingNamespace
+    #endif // End of HSL_RUNTIME
+    #endif // End of __MYLIBRARY_HSL__
