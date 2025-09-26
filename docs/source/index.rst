@@ -12,7 +12,7 @@ serve as a good starting point for people wanting to learn it.
 
 .. note::
 
-   This project is under active development. This resource is also not a Hamilton-provided resource. If any issues are found, or you wish to contribute, please contact mailto:tarunchapman@hotmail.com, or reach out to me on discord (theonetruenerd)
+   This project is under active development. This resource is also not a Hamilton-provided resource. If any issues are found, or you wish to contribute, please contact tarunchapman@hotmail.com, or reach out to me on discord (theonetruenerd)
 
 Contents
 --------
