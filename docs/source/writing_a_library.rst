@@ -18,21 +18,21 @@ we will aim to use this format.
 
 The structure of an HSL library should begin with a commented out description of the file:
 
-    .. code-block:: console
-    //----------------------------------------------------------------------------------------
-    //
-    // Library Name:		MyFlankingNamespace::MyLibraryName
-    // Description:			A description of my library
-    // Author:			    tarunchapman
-    // Date Created:		2025-09-26
-    // Major ID:			My library major id in hexadecimal
-    //
-    // Library Version:		v1.0
-    //
-    // Changelog:
-    //			v1.0	-	2025-09-26	-	Library Created
-    //
-    //----------------------------------------------------------------------------------------
+    .. code-block::
+        //----------------------------------------------------------------------------------------
+        //
+        // Library Name:		MyFlankingNamespace::MyLibraryName
+        // Description:			A description of my library
+        // Author:			    tarunchapman
+        // Date Created:		2025-09-26
+        // Major ID:			My library major id in hexadecimal
+        //
+        // Library Version:		v1.0
+        //
+        // Changelog:
+        //			v1.0	-	2025-09-26	-	Library Created
+        //
+        //----------------------------------------------------------------------------------------
 
 As shown above, this should ideally contain the library name (including any flanking namespace, such as HSLExtensions or
 TCExtensions, a description of the library, the name (and potentially contact details) of the author, the date the library
