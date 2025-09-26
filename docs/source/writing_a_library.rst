@@ -19,6 +19,7 @@ we will aim to use this format.
 The structure of an HSL library should begin with a commented out description of the file:
 
     .. code-block::
+
         //----------------------------------------------------------------------------------------
         //
         // Library Name:		MyFlankingNamespace::MyLibraryName
@@ -45,9 +46,10 @@ recommended to have these for code legibility and debugging.
 
 Libraries should then have a section which defines their unique identifier and checks whether it is already defined:
 
-    .. code-block:: console
-    #ifndef __MYLIBRARY_HSL__
-    #define __MYLIBRARY_HSL__ 1
+    .. code-block::
+
+        #ifndef __MYLIBRARY_HSL__
+        #define __MYLIBRARY_HSL__ 1
 
 This first line checks whether the library has already been defined in the method it is being imported into, and only proceeds
 if the library has not already been defined. This ensures libraries do not accidentally get imported twice. The second line
@@ -56,10 +58,11 @@ is what defines the library, which means any subsequent library imports will be 
 Next there should be a block for imports, allowing you to include other libraries, so that you can reference their functions
 in your library.
 
-    .. code-block:: console
-    #ifndef __HSLMTHLIB_HSL__
-        #include "HslMthLib.hsl"
-    #endif
+    .. code-block::
+
+        #ifndef __HSLMTHLIB_HSL__
+            #include "HslMthLib.hsl"
+        #endif
 
 The first line checks whether the HslMthLib has already been defined in the method, and helps ensure it isn't imported twice.
 To check what this should be, go into the .hsl file of the library which is being imported, and copy the word after the
@@ -75,10 +78,11 @@ The next part of the library should be the empty implementation. Firstly, you ne
 are making a group of related libraries, it is often useful to add a flanking namespace (e.g. HSLExtensions), followed by
 your library namespace. If it is an isolated (and uniquely named) library then this isn't necessary.
 
-    .. code-block:: console
-    #ifndef HSL_RUNTIME
-    namespace MyFlankingNamespace {
-        namespace MyLibraryNamespace {
+    .. code-block::
+
+        #ifndef HSL_RUNTIME
+        namespace MyFlankingNamespace {
+            namespace MyLibraryNamespace {
 
 The first line is checking if HSL_RUNTIME is defined. This is a parser constant that is always defined at runtime but not
 at edit time, and thus is what speeds up checking library syntax.
@@ -87,21 +91,22 @@ The library namespace is usually just the name of your library.
 Within your library namespace, it is usually good practice to have a namespace for raising errors, within which should be
 the error namespaces and a "raise error" function.
 
-    .. code-block:: console
-    namespace Error {
+    .. code-block::
 
-        static function RaiseRuntimeError(
-                    variable majorID,
-                    variable minorID,
-                    variable specificID,
-                    string errorDescription,
-                    string functionName,
-                    variable lineNumber) void
-                {
-                    return;
-                }
+        namespace Error {
+
+            static function RaiseRuntimeError(
+                        variable majorID,
+                        variable minorID,
+                        variable specificID,
+                        string errorDescription,
+                        string functionName,
+                        variable lineNumber) void
+                    {
+                        return;
+                    }
+            }
         }
-    }
 
 This block is where we will store our error IDs and handle raising runtime errors in our library.
 
@@ -113,9 +118,10 @@ at once then it makes sense to have output parameters; if you want to modify the
 then having io variables makes sense, but often returning the value is the best way of doing things (as is the case in libraries
 such as HslStrLib).
 
-    .. code-block:: console
-    function SquareNumber(variable i_var_intNumberToSquare) variable {return(0);}
-    function SquareNumberAlternative(variable i_var_intNumberToSquare, variable& o_var_intSquaredNumber) void {return;}
+    .. code-block::
+
+        function SquareNumber(variable i_var_intNumberToSquare) variable {return(0);}
+        function SquareNumberAlternative(variable i_var_intNumberToSquare, variable& o_var_intSquaredNumber) void {return;}
 
 In this block, we have defined the empty implementations for both ways of implementing this function. The first expects
 a variable return value which will be the squared number; the second uses an output parameter. The "&" symbol after "variable"
@@ -126,88 +132,90 @@ function is expecting.
 If we wanted a function to be accessible for other functions within the library but not to be visible within the Graphical
 Method Editor, we would give it the private scope, like so:
 
-    .. code-block:: console
-    private function MySupportingFunction() void {return;}
+    .. code-block::
+
+        private function MySupportingFunction() void {return;}
 
 Once we have defined all our empty function implementations, we would then close that section of the library:
 
-    .. code-block:: console
-        } // end of library namespace
-    } // end of flanking namespace
-    #endif // End of "#ifndef HSL_RUNTIME
+    .. code-block::
+
+            } // end of library namespace
+        } // end of flanking namespace
+        #endif // End of "#ifndef HSL_RUNTIME
 
 Next we have the block of our library which is used during actual runtime:
 
-    .. code-block:: console
+    .. code-block::
 
-    #ifdef HSL_RUNTIME
+        #ifdef HSL_RUNTIME
 
-    namespace MyFlankingNamespace {
-        namespace MyLibraryNamespace {
+        namespace MyFlankingNamespace {
+            namespace MyLibraryNamespace {
 
 Firstly, we would add our actual error namespace, with the error ids and raise error functions
 
-    .. code-block:: console
+    .. code-block::
 
-    namespace Error {
+        namespace Error {
 
-        static const variable MajorID       (0xC8); // This should be the major ID of the library
+            static const variable MajorID       (0xC8); // This should be the major ID of the library
 
 We also need to define our minor and specific error ids. Minor error ids correspond with the individual function in our
 library, and specific error ids correspond with the actual error occurring. This should all be within the Error namespace
 
-    .. code-block:: console
+    .. code-block::
 
-    namespace MinorIDs {
-        static const variable UnspecifiedFunctionId         (0x00)  // Always good to keep 0x00 free for unspecified errors
-        static const variable SquareNumberId                (0x01)  // Repeat this for each function (private or public) in your library
-        static const variable SquareNumberAlternativeId     (0x02)
-    }
+        namespace MinorIDs {
+            static const variable UnspecifiedFunctionId         (0x00)  // Always good to keep 0x00 free for unspecified errors
+            static const variable SquareNumberId                (0x01)  // Repeat this for each function (private or public) in your library
+            static const variable SquareNumberAlternativeId     (0x02)
+        }
 
-    namespace SpecificIDs {
-        static const variable UnspecifiedErrorId    (0x00)  // Again, keep 0x00 free for unspecified errors
-        static const variable InputNotInt            (0x01)  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
-    }
+        namespace SpecificIDs {
+            static const variable UnspecifiedErrorId    (0x00)  // Again, keep 0x00 free for unspecified errors
+            static const variable InputNotInt            (0x01)  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
+        }
 
 Then you want to define your RaiseRuntimeError function:
 
-    .. code-block:: console
+    .. code-block::
 
-    // --------------------------
-    // Function: RaiseRuntimeError
-    // Scope: Static
-    // Description: Handles the generation of error codes and descriptions in the trace
-    // Parameters:
-    //	[i] majorID	-	The major error ID
-    //	[i] minorID	-	The minor error ID
-    //	[i] specificID	-	The specific error ID
-    //	[i] errorDescription	-	The error description
-    //	[i] functionName	-	The name of the function that raised the error
-    //	[i] lineNumber	-	The line number of the function that raised the error
-    // Returns: Void
-    // --------------------------
-    static function RaiseRuntimeError(
-        variable majorID,
-        variable minorID,
-        variable specificID,
-        string errorDescription,
-        string functionName,
-        variable lineNumber) void
-    {
-        // Defining function variables
-        variable HxResult;
-        variable description;
+        // --------------------------
+        // Function: RaiseRuntimeError
+        // Scope: Static
+        // Description: Handles the generation of error codes and descriptions in the trace
+        // Parameters:
+        //	[i] majorID	-	The major error ID
+        //	[i] minorID	-	The minor error ID
+        //	[i] specificID	-	The specific error ID
+        //	[i] errorDescription	-	The error description
+        //	[i] functionName	-	The name of the function that raised the error
+        //	[i] lineNumber	-	The line number of the function that raised the error
+        // Returns: Void
+        // --------------------------
+        static function RaiseRuntimeError(
+            variable majorID,
+            variable minorID,
+            variable specificID,
+            string errorDescription,
+            string functionName,
+            variable lineNumber) void
+        {
+            // Defining function variables
+            variable HxResult;
+            variable description;
 
-        // Generating error code
-        HxResult = MthShiftLeft(minorID & 0x1F, 24) | MthShiftLeft(majorID & 0xFF, 16) | (specificID & 0xFFFF);
-        // Defining error description;
-        description = "MyLibrary.hsl ("+lineNumber+") : " + functionName + "() : " + errorDescription;
-        err.SetDescription(description);
-        // Raising error
-        err.Raise(HxResult, err.GetDescription());
-        // Returning void
-        return;
-    }
+            // Generating error code
+            HxResult = MthShiftLeft(minorID & 0x1F, 24) | MthShiftLeft(majorID & 0xFF, 16) | (specificID & 0xFFFF);
+            // Defining error description;
+            description = "MyLibrary.hsl ("+lineNumber+") : " + functionName + "() : " + errorDescription;
+            err.SetDescription(description);
+            // Raising error
+            err.Raise(HxResult, err.GetDescription());
+            // Returning void
+            return;
+        }
 
 Whenever we wish to throw an error in any of our library functions, we will call this. This will raise an error in the
 default way that Venus does, so integrates well with other systems interacting with "normal" runtime errors. It also allows
@@ -221,89 +229,91 @@ one, and what the function returns.
 
 Once we have defined our error function, we can close the error namespace and move onto our actual functions:
 
-    .. code-block:: console
-    } // End of error namespace
+    .. code-block::
 
-    // Private functions
+        } // End of error namespace
 
-    // --------------------------
-    // Function: MySupportingFunction
-    // Scope: Private
-    // Description: A supporting function not visible in the method editor
-    // Parameters: None
-    // Returns: Void
-    // --------------------------
-    private function MySupportingFunction() void
-    {
-        // We would put the code for our supporting function here
-        return;
-    }
+        // Private functions
+
+        // --------------------------
+        // Function: MySupportingFunction
+        // Scope: Private
+        // Description: A supporting function not visible in the method editor
+        // Parameters: None
+        // Returns: Void
+        // --------------------------
+        private function MySupportingFunction() void
+        {
+            // We would put the code for our supporting function here
+            return;
+        }
 
 Then we want to add our public functions (accessible in the method editor)
 
-    .. code-block:: console
+    .. code-block::
 
-    // Public functions
+        // Public functions
 
-    // --------------------------
-    // Function: SquareNumber
-    // Scope: Public
-    // Description: Returns the square of the input number
-    // Parameters:
-    //	[i] i_var_intInputNumber    -   The number to be squared
-    // Returns: Variable. The squared number
-    // --------------------------
-    function SquareNumber(variable i_var_intInputNumber) variable
-    {
-        variable outputNumber; // Before using any variable we need to define it.
-        variable typeCheck; // Any variables declared in functions are local and not accessible outside the function
-
-        // Lets say we want our function to only handle integers
-        typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
-        if (typeCheck == hslFalse)
+        // --------------------------
+        // Function: SquareNumber
+        // Scope: Public
+        // Description: Returns the square of the input number
+        // Parameters:
+        //	[i] i_var_intInputNumber    -   The number to be squared
+        // Returns: Variable. The squared number
+        // --------------------------
+        function SquareNumber(variable i_var_intInputNumber) variable
         {
-            // Here we call our RaiseRuntimeError function
-            Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber(););
+            variable outputNumber; // Before using any variable we need to define it.
+            variable typeCheck; // Any variables declared in functions are local and not accessible outside the function
+
+            // Lets say we want our function to only handle integers
+            typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+            if (typeCheck == hslFalse)
+            {
+                // Here we call our RaiseRuntimeError function
+                Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber(););
+            }
+
+            outputNumber = i_var_intInputNumber * i_var_intInputNumber;
+
+            return (outputNumber);
         }
 
-        outputNumber = i_var_intInputNumber * i_var_intInputNumber;
-
-        return (outputNumber);
-    }
-
-    // --------------------------
-    // Function: SquareNumberAlternative
-    // Scope: Public
-    // Description: Outputs the square of the input number
-    // Parameters:
-    //	[i] i_var_intInputNumber    -   The number to be squared
-    //  [o] o_var_intSquaredNumber  -   The squared number
-    // Returns: Void
-    // --------------------------
-    function SquareNumber(variable i_var_intInputNumber, variable& o_var_intSquaredNumber) void
-    {
-        variable typeCheck;
-
-        // Lets say we want our function to only handle integers
-        typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
-        if (typeCheck == hslFalse)
+        // --------------------------
+        // Function: SquareNumberAlternative
+        // Scope: Public
+        // Description: Outputs the square of the input number
+        // Parameters:
+        //	[i] i_var_intInputNumber    -   The number to be squared
+        //  [o] o_var_intSquaredNumber  -   The squared number
+        // Returns: Void
+        // --------------------------
+        function SquareNumber(variable i_var_intInputNumber, variable& o_var_intSquaredNumber) void
         {
-            // We can reuse the specific error id as it is the same cause, though often you will not be able to do this.
-            // The minor error id corresponds to the specific function.
-            Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber(););
-        }
+            variable typeCheck;
 
-        o_var_intSquaredNumber = i_var_intInputNumber * i_var_intInputNumber;
-        return;
-    }
+            // Lets say we want our function to only handle integers
+            typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+            if (typeCheck == hslFalse)
+            {
+                // We can reuse the specific error id as it is the same cause, though often you will not be able to do this.
+                // The minor error id corresponds to the specific function.
+                Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber(););
+            }
+
+            o_var_intSquaredNumber = i_var_intInputNumber * i_var_intInputNumber;
+            return;
+        }
 
 Assuming these are all the functions we need, we can now close off our namespaces and add our "#endif"s
 
-    .. code-block:: console
-        } // End of MyLibraryNamespace
-    } // End of MyFlankingNamespace
-    #endif // End of HSL_RUNTIME
-    #endif // End of __MYLIBRARY_HSL__
+    .. code-block::
+
+            } // End of MyLibraryNamespace
+        } // End of MyFlankingNamespace
+        #endif // End of HSL_RUNTIME
+        #endif // End of __MYLIBRARY_HSL__
 
 And there you go! Your first library! This just goes through the basic structure. Continue to browse the documentation for
 more detail on specific functions, or look at how to create help files and icons for your functions.
