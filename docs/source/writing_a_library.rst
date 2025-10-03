@@ -167,14 +167,14 @@ library, and specific error ids correspond with the actual error occurring. This
     .. code-block::
 
         namespace MinorIDs {
-            static const variable UnspecifiedFunctionId         (0x00)  // Always good to keep 0x00 free for unspecified errors
-            static const variable SquareNumberId                (0x01)  // Repeat this for each function (private or public) in your library
-            static const variable SquareNumberAlternativeId     (0x02)
+            static const variable UnspecifiedFunctionId         (0x00);  // Always good to keep 0x00 free for unspecified errors
+            static const variable SquareNumberId                (0x01);  // Repeat this for each function (private or public) in your library
+            static const variable SquareNumberAlternativeId     (0x02);
         }
 
         namespace SpecificIDs {
-            static const variable UnspecifiedErrorId    (0x00)  // Again, keep 0x00 free for unspecified errors
-            static const variable InputNotInt            (0x01)  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
+            static const variable UnspecifiedErrorId    (0x00);  // Again, keep 0x00 free for unspecified errors
+            static const variable InputNotInt            (0x01);  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
         }
 
 Then you want to define your RaiseRuntimeError function:
@@ -387,14 +387,14 @@ Full Example Code
                 static const variable MajorID       (0xC8); // This should be the major ID of the library
 
                 namespace MinorIDs {
-                    static const variable UnspecifiedFunctionId         (0x00)  // Always good to keep 0x00 free for unspecified errors
-                    static const variable SquareNumberId                (0x01)  // Repeat this for each function (private or public) in your library
-                    static const variable SquareNumberAlternativeId     (0x02)
+                    static const variable UnspecifiedFunctionId         (0x00);  // Always good to keep 0x00 free for unspecified errors
+                    static const variable SquareNumberId                (0x01);  // Repeat this for each function (private or public) in your library
+                    static const variable SquareNumberAlternativeId     (0x02);
                 }
 
                 namespace SpecificIDs {
-                    static const variable UnspecifiedErrorId    (0x00)  // Again, keep 0x00 free for unspecified errors
-                    static const variable InputNotInt            (0x01)  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
+                    static const variable UnspecifiedErrorId    (0x00);  // Again, keep 0x00 free for unspecified errors
+                    static const variable InputNotInt            (0x01);  // Do this for each error you are throwing. Follow the error with a commented out line explaining what the error is, for easier debugging. In this case, description would be "input not an integer"
                 }
 
                 // --------------------------
