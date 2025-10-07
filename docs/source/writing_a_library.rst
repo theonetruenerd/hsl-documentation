@@ -99,8 +99,8 @@ the error namespaces and a "raise error" function.
                         variable majorID,
                         variable minorID,
                         variable specificID,
-                        string errorDescription,
-                        string functionName,
+                        variable errorDescription,
+                        variable functionName,
                         variable lineNumber) void
                     {
                         return;
@@ -198,8 +198,8 @@ Then you want to define your RaiseRuntimeError function:
             variable majorID,
             variable minorID,
             variable specificID,
-            string errorDescription,
-            string functionName,
+            variable errorDescription,
+            variable functionName,
             variable lineNumber) void
         {
             // Defining function variables
@@ -248,7 +248,10 @@ Once we have defined our error function, we can close the error namespace and mo
             return;
         }
 
-Then we want to add our public functions (accessible in the method editor)
+Then we want to add our public functions (accessible in the method editor). When you call a function from another library
+(already defined in the method), you format the HSL code as this: FlankingNamespace::LibraryNamespace::FunctionName. Some
+libraries may have flanking namepsace; others may not. If unsure, you can open the library in the HSL Method Editor to find
+the corresponding namespace(s) and function name.
 
     .. code-block::
 
@@ -268,11 +271,11 @@ Then we want to add our public functions (accessible in the method editor)
             variable typeCheck; // Any variables declared in functions are local and not accessible outside the function
 
             // Lets say we want our function to only handle integers
-            typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+            typeCheck = Util::IsInteger(i_var_intInputNumber);
             if (typeCheck == hslFalse)
             {
                 // Here we call our RaiseRuntimeError function
-                Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber(););
+                Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber());
             }
 
             outputNumber = i_var_intInputNumber * i_var_intInputNumber;
@@ -294,12 +297,12 @@ Then we want to add our public functions (accessible in the method editor)
             variable typeCheck;
 
             // Lets say we want our function to only handle integers
-            typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+            typeCheck = Util::IsInteger(i_var_intInputNumber);
             if (typeCheck == hslFalse)
             {
                 // We can reuse the specific error id as it is the same cause, though often you will not be able to do this.
                 // The minor error id corresponds to the specific function.
-                Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber(););
+                Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber());
             }
 
             o_var_intSquaredNumber = i_var_intInputNumber * i_var_intInputNumber;
@@ -359,8 +362,8 @@ Full Example Code
                             variable majorID,
                             variable minorID,
                             variable specificID,
-                            string errorDescription,
-                            string functionName,
+                            variable errorDescription,
+                            variable functionName,
                             variable lineNumber) void
                         {
                             return;
@@ -414,8 +417,8 @@ Full Example Code
                     variable majorID,
                     variable minorID,
                     variable specificID,
-                    string errorDescription,
-                    string functionName,
+                    variable errorDescription,
+                    variable functionName,
                     variable lineNumber) void
                 {
                     // Defining function variables
@@ -465,11 +468,11 @@ Full Example Code
                 variable typeCheck; // Any variables declared in functions are local and not accessible outside the function
 
                 // Lets say we want our function to only handle integers
-                typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+                typeCheck = Util::IsInteger(i_var_intInputNumber);
                 if (typeCheck == hslFalse)
                 {
                     // Here we call our RaiseRuntimeError function
-                    Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber(););
+                    Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumber",GetLineNumber());
                 }
 
                 outputNumber = i_var_intInputNumber * i_var_intInputNumber;
@@ -491,12 +494,12 @@ Full Example Code
                 variable typeCheck;
 
                 // Lets say we want our function to only handle integers
-                typeCheck = HSLUtilLib::IsInteger(i_var_intInputNumber)
+                typeCheck = Util::IsInteger(i_var_intInputNumber);
                 if (typeCheck == hslFalse)
                 {
                     // We can reuse the specific error id as it is the same cause, though often you will not be able to do this.
                     // The minor error id corresponds to the specific function.
-                    Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber(););
+                    Error::RaiseRuntimeError(Error::MajorID,Error::MinorIDs::SquareNumberAlternativeID,Error::SpecificIDs::InputNotInt,"Input not an integer","SquareNumberAlternative",GetLineNumber());
                 }
 
                 o_var_intSquaredNumber = i_var_intInputNumber * i_var_intInputNumber;
